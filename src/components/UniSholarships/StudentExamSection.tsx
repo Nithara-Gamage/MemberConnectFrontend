@@ -29,6 +29,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Eye, Check, AlertCircle } from "lucide-react";
 import { authFetch } from "@/lib/api/authFetch";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 type FormData = {
   requestDate: string;
   studentName: string;
@@ -351,7 +353,7 @@ export default function StudentExamSection() {
   useEffect(() => {
     const fetchRequiredDocumentTypes = async () => {
       const res = await authFetch(
-        "http://localhost:8080/api/required-document-types/UNIVERSITY_SCHOLARSHIP"
+        `${API_BASE_URL}/api/required-document-types/UNIVERSITY_SCHOLARSHIP`
       );
       const data = await res.json();
       setRequiredDocumentTypes(data);
@@ -368,7 +370,7 @@ export default function StudentExamSection() {
     const fetchMember = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/members/${targetMemberId}`
+          `${API_BASE_URL}/api/members/${targetMemberId}`
         );
 
         if (!res.ok) {
@@ -395,7 +397,7 @@ export default function StudentExamSection() {
     const fetchMemberScholarships = async () => {
       try {
         const response = await authFetch(
-          `http://localhost:8080/api/university-scholarships/member/${encodeURIComponent(targetMemberId)}`
+          `${API_BASE_URL}/api/university-scholarships/member/${encodeURIComponent(targetMemberId)}`
         );
 
         if (!response.ok) {
@@ -425,7 +427,7 @@ export default function StudentExamSection() {
     const fetchRequest = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/university-scholarships/${encodeURIComponent(requestKey)}`
+          `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(requestKey)}`
         );
 
         if (!res.ok) {
@@ -487,7 +489,7 @@ export default function StudentExamSection() {
     const fetchUploadedDocuments = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/uploaded-documents/by-request?requestId=${encodeURIComponent(
+          `${API_BASE_URL}/api/uploaded-documents/by-request?requestId=${encodeURIComponent(
             requestId
           )}`
         );
@@ -576,8 +578,8 @@ export default function StudentExamSection() {
     const fetchInitialData = async () => {
       try {
         const [uniRes, bankRes] = await Promise.all([
-          authFetch("http://localhost:8080/api/universities"),
-          authFetch("http://localhost:8080/api/banks"),
+          authFetch(`${API_BASE_URL}/api/universities`),
+          authFetch(`${API_BASE_URL}/api/banks`),
         ]);
 
         const uniData = await uniRes.json();
@@ -608,7 +610,7 @@ export default function StudentExamSection() {
     const fetchPrograms = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/programs/${selectedUniversity}`
+          `${API_BASE_URL}/api/programs/${selectedUniversity}`
         );
         const data = await res.json();
         setPrograms(data);
@@ -632,7 +634,7 @@ export default function StudentExamSection() {
     const fetchDuration = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/duration?universityId=${selectedUniversity}&programId=${selectedProgram}`
+          `${API_BASE_URL}/api/duration?universityId=${selectedUniversity}&programId=${selectedProgram}`
         );
         const data = await res.json();
         setValue("duration", String(data));
@@ -655,7 +657,7 @@ export default function StudentExamSection() {
     const fetchBranches = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/branches/${selectedBank}`
+          `${API_BASE_URL}/api/branches/${selectedBank}`
         );
         const data = await res.json();
         setBranches(data);
@@ -686,7 +688,7 @@ export default function StudentExamSection() {
       setIsValidatingExamNo(true);
 
       const response = await authFetch(
-        `http://localhost:8080/api/validate-exam-no?ExamNumber=${encodeURIComponent(
+        `${API_BASE_URL}/api/validate-exam-no?ExamNumber=${encodeURIComponent(
           selectedExamNo
         )}`
       );
@@ -752,7 +754,7 @@ export default function StudentExamSection() {
 
       if (requestId) {
         const res = await authFetch(
-          `http://localhost:8080/api/university-scholarships/${requestId}`,
+          `${API_BASE_URL}/api/university-scholarships/${requestId}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -774,7 +776,7 @@ export default function StudentExamSection() {
         savedRequest = await res.json();
       } else {
         const response = await authFetch(
-          "http://localhost:8080/api/university-scholarships",
+          `${API_BASE_URL}/api/university-scholarships`,
           {
             method: "POST",
             headers: {
@@ -903,7 +905,7 @@ export default function StudentExamSection() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/submit/${actionId}`,
+        `${API_BASE_URL}/api/university-scholarships/submit/${actionId}`,
         {
           method: "POST",
         }
@@ -951,7 +953,7 @@ export default function StudentExamSection() {
     setIsChangingStatus(true);
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(String(actionId))}/status`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(String(actionId))}/status`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -1002,7 +1004,7 @@ export default function StudentExamSection() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/validate-exam-no?ExamNumber=${encodeURIComponent(
+        `${API_BASE_URL}/api/validate-exam-no?ExamNumber=${encodeURIComponent(
           examNo
         )}`
       );
@@ -1053,7 +1055,7 @@ export default function StudentExamSection() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/minor-account/check?birthCertificateNumber=${encodeURIComponent(
+        `${API_BASE_URL}/api/minor-account/check?birthCertificateNumber=${encodeURIComponent(
           bcNo
         )}`
       );
@@ -1120,7 +1122,7 @@ export default function StudentExamSection() {
 
     try {
 
-      const res = await authFetch(`http://localhost:8080/api/university-scholarships/committee-approve/${requestId}`, {
+      const res = await authFetch(`${API_BASE_URL}/api/university-scholarships/committee-approve/${requestId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: requestId, status: nextStatus }),
@@ -1166,7 +1168,7 @@ export default function StudentExamSection() {
 
     (async () => {
       try {
-        const res = await authFetch(`http://localhost:8080/api/university-scholarships/committee-reject/${requestId}`, {
+        const res = await authFetch(`${API_BASE_URL}/api/university-scholarships/committee-reject/${requestId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ decisionReason: rejectReason.trim() }),
@@ -1219,7 +1221,7 @@ export default function StudentExamSection() {
       formData.append("file", file.file);
 
       const response = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/upload?requestId=${encodeURIComponent(
+        `${API_BASE_URL}/api/uploaded-documents/upload?requestId=${encodeURIComponent(
           savedRequestId
         )}&requiredDocumentId=${encodeURIComponent(reqDoc.id)}`,
         {
@@ -1248,7 +1250,7 @@ export default function StudentExamSection() {
     // Refresh the uploaded documents list from backend
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/by-request?requestId=${encodeURIComponent(
+        `${API_BASE_URL}/api/uploaded-documents/by-request?requestId=${encodeURIComponent(
           savedRequestId
         )}`
       );
@@ -1269,7 +1271,7 @@ export default function StudentExamSection() {
   // Perform update request
   const updateScholarship = async (id: string | number, data: any) => {
     try {
-      const res = await authFetch(`http://localhost:8080/api/university-scholarships/${id}`, {
+      const res = await authFetch(`${API_BASE_URL}/api/university-scholarships/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -1306,7 +1308,7 @@ export default function StudentExamSection() {
 
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/university-scholarships/incomplete/${actionId}`,
+        `${API_BASE_URL}/api/university-scholarships/incomplete/${actionId}`,
         {
           method: "POST",
           headers: {
@@ -1352,7 +1354,7 @@ export default function StudentExamSection() {
     if (!requestId) return;
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/${docId}?requestId=${encodeURIComponent(requestId)}`,
+        `${API_BASE_URL}/api/uploaded-documents/${docId}?requestId=${encodeURIComponent(requestId)}`,
         { method: "DELETE" }
       );
 
@@ -1410,7 +1412,7 @@ export default function StudentExamSection() {
 
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${requestId}/approved-details`,
+        `${API_BASE_URL}/api/university-scholarships/${requestId}/approved-details`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -1569,7 +1571,7 @@ export default function StudentExamSection() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/member/${encodeURIComponent(targetMemberId)}`
+        `${API_BASE_URL}/api/university-scholarships/member/${encodeURIComponent(targetMemberId)}`
       );
 
       if (!response.ok) {
@@ -2157,7 +2159,7 @@ export default function StudentExamSection() {
                       reqDoc?.displayName || doc.documentType || "Document";
                     const previewUrl =
                       doc.fileUrl ||
-                      `http://localhost:8080/api/uploaded-documents/download/${doc.id}?requestId=${encodeURIComponent(
+                      `${API_BASE_URL}/api/uploaded-documents/download/${doc.id}?requestId=${encodeURIComponent(
                         doc.requestId || requestId || ""
                       )}`;
 

@@ -30,6 +30,8 @@ import AccessRestricted from "@/src/components/AccessRestricted";
 import { getEducationalDistricts } from "@/lib/api/education";
 import { authFetch } from "@/lib/api/authFetch";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 type RequestRow = {
   id: number;
   requestId?: string;
@@ -336,7 +338,7 @@ export default function Page() {
       }
 
       const res = await authFetch(
-        `http://localhost:8080/api/university-scholarships/search?${params.toString()}`
+        `${API_BASE_URL}/api/university-scholarships/search?${params.toString()}`
       );
       const data = await res.json();
 
@@ -358,7 +360,7 @@ export default function Page() {
 
   const handleOpenBoardMeetingModal = async (deviation = false) => {
     try {
-      const res = await authFetch("http://localhost:8080/api/board-meetings/getAllBoardMeetings");
+      const res = await authFetch(`${API_BASE_URL}/api/board-meetings/getAllBoardMeetings`);
       if (!res.ok) {
         throw new Error("Failed to fetch board meetings");
       }
@@ -396,8 +398,8 @@ export default function Page() {
       const requestIds = selectedRequests.map(r => r.requestId).filter(Boolean);
 
       const endpoint = isDeviationModal
-        ? "http://localhost:8080/api/university-scholarships/attach-deviation-board-meeting"
-        : "http://localhost:8080/api/university-scholarships/attach-board-meeting";
+        ? `${API_BASE_URL}/api/university-scholarships/attach-deviation-board-meeting`
+        : `${API_BASE_URL}/api/university-scholarships/attach-board-meeting`;
 
       const res = await authFetch(endpoint, {
         method: "POST",

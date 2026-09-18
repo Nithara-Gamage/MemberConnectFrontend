@@ -8,6 +8,8 @@ import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { authFetch } from "@/lib/api/authFetch";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 interface Grade5FormProps {
   memberId: string;
   initialData?: Grade5InitialData | null;
@@ -184,7 +186,7 @@ const Grade5Form = forwardRef<Grade5FormRef, Grade5FormProps>(
     useEffect(() => {
       const fetchExamYears = async () => {
         try {
-          const res = await authFetch("http://localhost:8080/api/grade5/exam-years");
+          const res = await authFetch(`${API_BASE_URL}/api/grade5/exam-years`);
 
           if (!res.ok) {
             throw new Error("Failed to load exam years");
@@ -244,7 +246,7 @@ const Grade5Form = forwardRef<Grade5FormRef, Grade5FormProps>(
         const fetchCutoff = async () => {
           try {
             const res = await authFetch(
-              `http://localhost:8080/api/cutoff?district=${encodeURIComponent(
+              `${API_BASE_URL}/api/cutoff?district=${encodeURIComponent(
                 selectedDistrict
               )}&year=${selectedYear}`
             );
@@ -302,7 +304,7 @@ const Grade5Form = forwardRef<Grade5FormRef, Grade5FormProps>(
         setCheckingExamNo(true);
 
         const res = await authFetch(
-          `http://localhost:8080/api/grade5/exists?examNo=${encodeURIComponent(
+          `${API_BASE_URL}/api/grade5/exists?examNo=${encodeURIComponent(
             examNo
           )}`
         );
@@ -362,7 +364,7 @@ const Grade5Form = forwardRef<Grade5FormRef, Grade5FormProps>(
         setCheckingBirthCertNo(true);
 
         const res = await fetch(
-          `http://localhost:8080/api/grade5/exists-birth-certificate?birthCertificateNo=${encodeURIComponent(
+          `${API_BASE_URL}/api/grade5/exists-birth-certificate?birthCertificateNo=${encodeURIComponent(
             birthCertNo
           )}`
         );
@@ -429,8 +431,8 @@ const Grade5Form = forwardRef<Grade5FormRef, Grade5FormProps>(
       try {
         const res = await authFetch(
           isUpdate
-            ? `http://localhost:8080/api/grade5/${requestNo}/update`
-            : `http://localhost:8080/api/grade5/save?memberId=${encodeURIComponent(memberIdRef.current)}`,
+            ? `${API_BASE_URL}/api/grade5/${requestNo}/update`
+            : `${API_BASE_URL}/api/grade5/save?memberId=${encodeURIComponent(memberIdRef.current)}`,
           {
             method: isUpdate ? "PUT" : "POST",
             headers: {

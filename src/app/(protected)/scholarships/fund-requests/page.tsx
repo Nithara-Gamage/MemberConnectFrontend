@@ -34,6 +34,8 @@ import {
 } from "@/src/components/ui/select";
 import { authFetch } from "@/lib/api/authFetch";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 type ScholarshipFundRequest = {
   id?: number | string;
   requestId?: string;
@@ -312,7 +314,7 @@ export default function UniversityScholarshipFundRequestsPage() {
       }
 
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarship-fund-requests/search?${params.toString()}`
+        `${API_BASE_URL}/api/university-scholarship-fund-requests/search?${params.toString()}`
       );
       if (!response.ok) {
         throw new Error("Failed to retrieve university scholarship fund requests");

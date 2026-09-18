@@ -13,6 +13,8 @@ import {
 } from "../ui/table";
 import { Trash2, UploadCloud } from "lucide-react";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 export type DocumentFileItem = {
   file: File;
   documentType: string;
@@ -215,7 +217,7 @@ export default function Document({
                   <TableCell className="px-4 py-4">
                     {item.id ? (
                       <a
-                        href={`http://localhost:8080/api/uploaded-documents/download/${item.id}?requestId=${encodeURIComponent(requestId ? String(requestId) : "")}`}
+                        href={`${API_BASE_URL}/api/uploaded-documents/download/${item.id}?requestId=${encodeURIComponent(requestId ? String(requestId) : "")}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-medium text-[#953002] hover:underline"

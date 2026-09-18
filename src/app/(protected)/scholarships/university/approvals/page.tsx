@@ -12,6 +12,8 @@ import { hasPermission, canDeleteUniversityList } from "@/lib/permissions";
 import AccessRestricted from "@/src/components/AccessRestricted";
 import { authFetch } from "@/lib/api/authFetch";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 type RequestRow = {
   id: number;
   requestId?: string;
@@ -219,7 +221,7 @@ function ApprovalsPageInner() {
       setDecisions({});
       setShowConfirmPopup(false);
 
-      const res = await authFetch("http://localhost:8080/api/university-scholarships");
+      const res = await authFetch(`${API_BASE_URL}/api/university-scholarships`);
       if (!res.ok) throw new Error("Failed to fetch scholarship requests");
       const data: RequestRow[] = await res.json();
 
@@ -339,7 +341,7 @@ function ApprovalsPageInner() {
   const fetchBoardMeetingOptions = async () => {
     try {
       const res = await authFetch(
-        "http://localhost:8080/api/board-meetings/getAllBoardMeetings"
+        `${API_BASE_URL}/api/board-meetings/getAllBoardMeetings`
       );
       if (!res.ok) {
         console.error("Failed to fetch board meetings:", res.status);
@@ -420,8 +422,8 @@ function ApprovalsPageInner() {
 
       const endpoint =
         activeTab === "deviation"
-          ? "http://localhost:8080/api/university-scholarships/process-deviation-approvals"
-          : "http://localhost:8080/api/university-scholarships/process-approvals";
+          ? `${API_BASE_URL}/api/university-scholarships/process-deviation-approvals`
+          : `${API_BASE_URL}/api/university-scholarships/process-approvals`;
 
       const res = await authFetch(endpoint, { method: "POST", body: formData });
       if (!res.ok) {
@@ -448,8 +450,8 @@ function ApprovalsPageInner() {
     setDeleteError(null);
     try {
       const endpoint = activeTab === "deviation"
-        ? `http://localhost:8080/api/university-scholarships/deviation-approval-list/${approvalListId}`
-        : `http://localhost:8080/api/university-scholarships/approval-list/${approvalListId}`;
+        ? `${API_BASE_URL}/api/university-scholarships/deviation-approval-list/${approvalListId}`
+        : `${API_BASE_URL}/api/university-scholarships/approval-list/${approvalListId}`;
 
       const res = await authFetch(endpoint, { method: "DELETE" });
       if (!res.ok) {

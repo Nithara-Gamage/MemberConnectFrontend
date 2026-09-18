@@ -61,7 +61,7 @@ export default function Grade5ScholarshipPage() {
   const { user } = useAuth();
   const formRef = useRef<Grade5FormRef>(null);
 
-  const API_BASE_URL = "http://localhost:8080";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
   const REQUIRED_MINOR_REMITTANCE_AMOUNT = 250;
 

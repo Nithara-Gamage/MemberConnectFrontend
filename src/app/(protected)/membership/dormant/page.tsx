@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { Input } from "@/src/components/ui/input";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import {
   DELETE_RIGHTS_ROLES,
@@ -1044,6 +1044,74 @@ export default function DormantMembersPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Create Inactivation Approval List / Select Board Meeting Modal (MMD13) */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-lg border bg-white shadow-xl">
+            <div className="flex items-start justify-between px-5 pt-5">
+              <h2 className="text-xl font-semibold text-[#953002]">
+                Select Board Meeting
+              </h2>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-gray-500 h-8 w-8 p-0"
+                onClick={() => setShowCreateModal(false)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </Button>
+            </div>
+
+            <div className="px-5 pb-5 pt-2">
+              <p className="mb-4 text-sm text-gray-600">
+                Select the board meeting to attach {selectedMemberIds.length} dormant member(s).
+              </p>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-gray-600">Board Meeting</label>
+                <Select
+                  value={createBoardMeetingId}
+                  onValueChange={setCreateBoardMeetingId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select board meeting" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {boardMeetings.map((bm) => (
+                      <SelectItem key={bm.id} value={String(bm.id)}>
+                        {bm.boardMeetingId
+                          ? `${bm.boardMeetingId} - ${formatDate(bm.scheduledDate)}`
+                          : `Board Meeting #${bm.id} - ${formatDate(bm.scheduledDate)}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowCreateModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-[#953002] hover:bg-[#7a2700] text-white"
+                  disabled={!createBoardMeetingId || creatingList}
+                  onClick={handleCreateList}
+                >
+                  {creatingList ? "Creating..." : "Create Approval List"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Post-create confirmation (MMD13) */}
       {createdListInfo && (

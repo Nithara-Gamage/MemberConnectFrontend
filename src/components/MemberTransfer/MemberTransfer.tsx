@@ -21,6 +21,8 @@ import { authFetch } from "@/lib/api/authFetch";
 import { useAuth } from "@/lib/auth-context";
 import { canApproveTransfer, canChangeTransferStatus } from "@/lib/permissions";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 type DocumentFileItem = {
   file: File;
   documentType: string;
@@ -316,7 +318,7 @@ export default function ChangeMemberTransferForm() {
   useEffect(() => {
     const fetchRequiredDocumentTypes = async () => {
       try {
-        const res = await authFetch("http://localhost:8080/api/required-document-types/MEMBER_TRANSFER");
+        const res = await authFetch(`${API_BASE_URL}/api/required-document-types/MEMBER_TRANSFER`);
         if (!res.ok) throw new Error("Failed to load document types");
         const data = await res.json();
         setRequiredDocumentTypes(data);
@@ -349,7 +351,7 @@ export default function ChangeMemberTransferForm() {
     if (!targetId) return;
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/${docId}?requestId=${encodeURIComponent(String(targetId))}`,
+        `${API_BASE_URL}/api/uploaded-documents/${docId}?requestId=${encodeURIComponent(String(targetId))}`,
         { method: "DELETE" }
       );
 
@@ -374,10 +376,10 @@ export default function ChangeMemberTransferForm() {
     const fetchMasters = async () => {
       try {
         const [typesRes, districtsRes, designationsRes, occupationsRes] = await Promise.all([
-          authFetch("http://localhost:8080/api/masters/working-location-types"),
-          authFetch("http://localhost:8080/api/masters/districts"),
-          authFetch("http://localhost:8080/api/masters/designations"),
-          authFetch("http://localhost:8080/api/masters/nature-of-occupations"),
+          authFetch(`${API_BASE_URL}/api/masters/working-location-types`),
+          authFetch(`${API_BASE_URL}/api/masters/districts`),
+          authFetch(`${API_BASE_URL}/api/masters/designations`),
+          authFetch(`${API_BASE_URL}/api/masters/nature-of-occupations`),
         ]);
 
         const [typesData, districtsData, designationsData, occupationsData] = await Promise.all([
@@ -416,7 +418,7 @@ export default function ChangeMemberTransferForm() {
 
     const fetchMember = async () => {
       try {
-        const res = await authFetch(`http://localhost:8080/api/members/by-member-id/${targetMemberId}`);
+        const res = await authFetch(`${API_BASE_URL}/api/members/by-member-id/${targetMemberId}`);
         if (!res.ok) throw new Error("Failed to load member");
 
         const data = await res.json();
@@ -542,7 +544,7 @@ export default function ChangeMemberTransferForm() {
 
     const fetchRequest = async () => {
       try {
-        const res = await authFetch("http://localhost:8080/api/member-transfers");
+        const res = await authFetch(`${API_BASE_URL}/api/member-transfers`);
         if (!res.ok) throw new Error("Failed to load member transfer request");
 
         const data: MemberTransferRecord[] = await res.json();
@@ -573,7 +575,7 @@ export default function ChangeMemberTransferForm() {
     const checkInFlightRequest = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/member-transfers/in-flight/${encodeURIComponent(targetMemberId)}`
+          `${API_BASE_URL}/api/member-transfers/in-flight/${encodeURIComponent(targetMemberId)}`
         );
         if (!res.ok) return;
 
@@ -633,7 +635,7 @@ export default function ChangeMemberTransferForm() {
     const fetchUploadedDocuments = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/uploaded-documents/by-request?requestId=${encodeURIComponent(String(requestId))}`
+          `${API_BASE_URL}/api/uploaded-documents/by-request?requestId=${encodeURIComponent(String(requestId))}`
         );
 
         if (!res.ok) {
@@ -700,7 +702,7 @@ export default function ChangeMemberTransferForm() {
     const fetchZones = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/masters/educational-zones?district=${encodeURIComponent(String(selectedDistrict))}`
+          `${API_BASE_URL}/api/masters/educational-zones?district=${encodeURIComponent(String(selectedDistrict))}`
         );
 
         if (!res.ok) {
@@ -746,7 +748,7 @@ export default function ChangeMemberTransferForm() {
           params.append("zone", String(selectedZone));
         }
 
-        const res = await authFetch(`http://localhost:8080/api/masters/working-locations?${params.toString()}`);
+        const res = await authFetch(`${API_BASE_URL}/api/masters/working-locations?${params.toString()}`);
 
         if (!res.ok) {
           setWorkingLocations([]);
@@ -786,7 +788,7 @@ export default function ChangeMemberTransferForm() {
 
     const fetchLocationDetails = async () => {
       try {
-        const res = await authFetch(`http://localhost:8080/api/working-locations/${encodeURIComponent(String(selectedWorkingLocation))}`);
+        const res = await authFetch(`${API_BASE_URL}/api/working-locations/${encodeURIComponent(String(selectedWorkingLocation))}`);
         if (!res.ok) return;
 
         const data = await res.json();
@@ -854,7 +856,7 @@ export default function ChangeMemberTransferForm() {
       console.log("FORM DATA:", data);
       console.log("DTO PAYLOAD:", payload);
 
-      const res = await authFetch("http://localhost:8080/api/member-transfers/submit", {
+      const res = await authFetch(`${API_BASE_URL}/api/member-transfers/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -906,7 +908,7 @@ export default function ChangeMemberTransferForm() {
           formData.append("file", docFile.file);
 
           const uploadRes = await authFetch(
-            `http://localhost:8080/api/uploaded-documents/upload?requestId=${encodeURIComponent(
+            `${API_BASE_URL}/api/uploaded-documents/upload?requestId=${encodeURIComponent(
               String(savedId)
             )}&requiredDocumentId=${encodeURIComponent(reqDoc.id)}`,
             {
@@ -934,7 +936,7 @@ export default function ChangeMemberTransferForm() {
         // Refresh the uploaded documents list from backend
         try {
           const docsRes = await authFetch(
-            `http://localhost:8080/api/uploaded-documents/by-request?requestId=${encodeURIComponent(String(savedId))}`
+            `${API_BASE_URL}/api/uploaded-documents/by-request?requestId=${encodeURIComponent(String(savedId))}`
           );
           if (docsRes.ok) {
             const docs = await docsRes.json();
@@ -993,7 +995,7 @@ export default function ChangeMemberTransferForm() {
     if (!requestId) return;
 
     try {
-      const res = await authFetch(`http://localhost:8080/api/member-transfers/approve/${requestId}`, {
+      const res = await authFetch(`${API_BASE_URL}/api/member-transfers/approve/${requestId}`, {
         method: "POST",
       });
 
@@ -1026,7 +1028,7 @@ export default function ChangeMemberTransferForm() {
     if (!requestId || rejectReason.trim() === "") return;
 
     try {
-      const res = await authFetch(`http://localhost:8080/api/member-transfers/reject/${requestId}`, {
+      const res = await authFetch(`${API_BASE_URL}/api/member-transfers/reject/${requestId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ decisionReason: rejectReason.trim() }),
@@ -1095,7 +1097,7 @@ export default function ChangeMemberTransferForm() {
     setIsChangingStatus(true);
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/member-transfers/${encodeURIComponent(String(actionId))}/status`,
+        `${API_BASE_URL}/api/member-transfers/${encodeURIComponent(String(actionId))}/status`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -1440,7 +1442,7 @@ export default function ChangeMemberTransferForm() {
                   const docTypeLabel = reqDoc?.displayName || doc.documentType || "Document";
                   const previewUrl =
                     doc.fileUrl ||
-                    `http://localhost:8080/api/uploaded-documents/download/${doc.id}?requestId=${encodeURIComponent(
+                    `${API_BASE_URL}/api/uploaded-documents/download/${doc.id}?requestId=${encodeURIComponent(
                       doc.requestId || String(requestId || "")
                     )}`;
 

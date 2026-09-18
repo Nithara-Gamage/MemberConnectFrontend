@@ -23,6 +23,8 @@ import {
   hasUserPermission,
 } from "@/lib/permissions";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 type FundRequestSchema = ReturnType<typeof fundRequestSchema>;
 type FundRequestFormInput = z.input<FundRequestSchema>;
 type FundRequestFormOutput = z.output<FundRequestSchema>;
@@ -282,7 +284,7 @@ export default function FundDisbursementRequest() {
       formData.append("file", docFile.file);
 
       const uploadRes = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/upload?requestId=${encodeURIComponent(
+        `${API_BASE_URL}/api/uploaded-documents/upload?requestId=${encodeURIComponent(
           savedFundRequestId
         )}&requiredDocumentId=${encodeURIComponent(reqDoc.id)}`,
         { method: "POST", body: formData }
@@ -307,7 +309,7 @@ export default function FundDisbursementRequest() {
     // Refresh the uploaded documents list from backend
     try {
       const docsRes = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/by-request?requestId=${encodeURIComponent(savedFundRequestId)}`
+        `${API_BASE_URL}/api/uploaded-documents/by-request?requestId=${encodeURIComponent(savedFundRequestId)}`
       );
       if (docsRes.ok) {
         const docs = await docsRes.json();
@@ -324,7 +326,7 @@ export default function FundDisbursementRequest() {
     if (!targetId) return;
     try {
       const res = await authFetch(
-        `http://localhost:8080/api/uploaded-documents/${docId}?requestId=${encodeURIComponent(String(targetId))}`,
+        `${API_BASE_URL}/api/uploaded-documents/${docId}?requestId=${encodeURIComponent(String(targetId))}`,
         { method: "DELETE" }
       );
 
@@ -348,7 +350,7 @@ export default function FundDisbursementRequest() {
   const handleSaveFundRequest = async (data: FundRequestFormOutput) => {
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -412,7 +414,7 @@ export default function FundDisbursementRequest() {
     const fetchRequiredDocumentTypes = async () => {
       try {
         const res = await authFetch(
-          "http://localhost:8080/api/required-document-types/FUND_REQUEST"
+          `${API_BASE_URL}/api/required-document-types/FUND_REQUEST`
         );
         if (!res.ok) throw new Error("Failed to load document types");
         const data = await res.json();
@@ -436,7 +438,7 @@ export default function FundDisbursementRequest() {
     const fetchUploadedDocuments = async () => {
       try {
         const res = await authFetch(
-          `http://localhost:8080/api/uploaded-documents/by-request?requestId=${encodeURIComponent(targetId)}`
+          `${API_BASE_URL}/api/uploaded-documents/by-request?requestId=${encodeURIComponent(targetId)}`
         );
         if (!res.ok) {
           setUploadedDocuments([]);
@@ -459,7 +461,7 @@ export default function FundDisbursementRequest() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}`
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}`
       );
 
       if (!response.ok) {
@@ -485,7 +487,7 @@ export default function FundDisbursementRequest() {
 
     const fetchMember = async () => {
       try {
-        const response = await authFetch(`http://localhost:8080/api/members/${encodeURIComponent(memberId)}`);
+        const response = await authFetch(`${API_BASE_URL}/api/members/${encodeURIComponent(memberId)}`);
 
         if (!response.ok) {
           throw new Error("Failed to load member details");
@@ -549,7 +551,7 @@ export default function FundDisbursementRequest() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/submit`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/submit`,
         { method: "POST" }
       );
 
@@ -592,7 +594,7 @@ export default function FundDisbursementRequest() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -649,7 +651,7 @@ export default function FundDisbursementRequest() {
 
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/status`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -699,7 +701,7 @@ export default function FundDisbursementRequest() {
     setIsChangingStatus(true);
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/status`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/status`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -745,7 +747,7 @@ export default function FundDisbursementRequest() {
     setIsIntegratingFinance(true);
     try {
       const response = await authFetch(
-        `http://localhost:8080/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/finance-integration`,
+        `${API_BASE_URL}/api/university-scholarships/${encodeURIComponent(scholarshipRequestId)}/fund-requests/${encodeURIComponent(targetFundRequestId)}/finance-integration`,
         { method: "POST" }
       );
 
@@ -1130,7 +1132,7 @@ export default function FundDisbursementRequest() {
                   const docTypeLabel = reqDoc?.displayName || doc.documentType || "Document";
                   const previewUrl =
                     doc.fileUrl ||
-                    `http://localhost:8080/api/uploaded-documents/download/${doc.id}?requestId=${encodeURIComponent(
+                    `${API_BASE_URL}/api/uploaded-documents/download/${doc.id}?requestId=${encodeURIComponent(
                       doc.requestId || fundRequestNo || fundRequestId || ""
                     )}`;
 

@@ -18,7 +18,7 @@ import { useAuth } from "@/lib/auth-context";
 import { hasPermission } from "@/lib/permissions";
 import AccessRestricted from "@/src/components/AccessRestricted";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
 // District names defined on the frontend — single source of truth for the table rows
 const DISTRICTS = [

@@ -44,6 +44,8 @@ import {
 	hasRole,
 } from "@/lib/permissions";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
 const detailTabs = [
 	"Profile Details",
 	"Documents",
@@ -435,7 +437,7 @@ export default function MemberProfilePage({
 
 				if (data.memberId) {
 					// Load every Grade 5 Scholarship request this member holds
-					fetch(`http://localhost:8080/api/grade5/${data.memberId}/requests`)
+					fetch(`${API_BASE_URL}/api/grade5/${data.memberId}/requests`)
 						.then(res => {
 							if (!res.ok) return null;
 							return res.text().then(text => {
@@ -452,7 +454,7 @@ export default function MemberProfilePage({
 						.catch(e => console.error("Error loading scholarship requests", e));
 
 					// Load any member transfer request awaiting approval
-					fetch(`http://localhost:8080/api/member-transfers/in-flight/${encodeURIComponent(data.memberId)}`)
+					fetch(`${API_BASE_URL}/api/member-transfers/in-flight/${encodeURIComponent(data.memberId)}`)
 						.then(res => (res.ok ? res.json() : null))
 						.then(transferVal => {
 							if (transferVal?.hasInFlight) {
